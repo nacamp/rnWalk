@@ -8,6 +8,7 @@ import {
   useColorScheme,
   View,
   Animated,
+  ImageBackground,
 } from 'react-native';
 
 
@@ -74,9 +75,17 @@ const App = ({ children, title }: SectionProps) => {
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
-        <Animated.Text style={[styles.headerTitle, { fontSize: titleSize }]}>
-          치매예방교실
-        </Animated.Text>
+        <ImageBackground
+          source={{ uri: "https://picsum.photos/300/200" }}
+          style={styles.headerBbackgroundImage}
+          resizeMode="cover"
+        >
+          <View style={styles.headerTitleContainer}>
+            <Animated.Text style={[styles.headerTitle, { fontSize: titleSize }]}>
+              치매예방교실
+            </Animated.Text>
+          </View>
+        </ImageBackground>
       </Animated.View>
       <ScrollView
         style={backgroundStyle}
@@ -85,8 +94,8 @@ const App = ({ children, title }: SectionProps) => {
           { useNativeDriver: false }
         )}
         scrollEventThrottle={16} //? 부드러운 반응 속도
-  
-        >
+
+      >
         <View
           style={{
             backgroundColor: backgroundStyle.backgroundColor,
@@ -158,9 +167,18 @@ const styles = StyleSheet.create({
 
     backgroundColor: "white",
   },
+  headerBbackgroundImage: {
+    ...StyleSheet.absoluteFillObject 
+  },
+  headerTitleContainer: {
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "flex-start" 
+  },
   headerTitle: {
     fontWeight: "bold",
   },
+
 
   sectionContainer: {
     marginTop: 30,
