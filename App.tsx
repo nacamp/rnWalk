@@ -184,6 +184,99 @@ const ChattingCard = () => {
   );
 }
 
+type ProgressBarProps = {
+  currentValue: number;
+  maxValue: number;
+};
+const ProgressBar = ({ currentValue, maxValue }: ProgressBarProps) => {
+  // 0~100%의 비율을 계산
+  const progressPercentage = (currentValue / maxValue) * 100;
+  const marker4000Percentage = (4000 / maxValue) * 100;
+  const marker10000Percentage = 100; // 항상 100% 위치
+
+  return (
+    <View style={{ width: "100%", alignItems: "center", marginVertical: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          height: 20,
+          position: "relative",
+          paddingHorizontal: 5,
+        }}
+      >
+        <Text style={{ fontSize: 12, color: "#333", position: "absolute", left: `${marker4000Percentage}%`, transform: [{ translateX: -10 }] }}>
+          4,000
+        </Text>
+        <Text style={{ fontSize: 12, color: "#333", position: "absolute", right: 0 }}>
+          10,000
+        </Text>
+      </View>
+
+      <View
+        style={{
+          width: "100%",
+          height: 15,
+          backgroundColor: "#ddd",
+          borderRadius: 10,
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <View
+          style={{
+            width: `${progressPercentage}%`,
+            height: "100%",
+            backgroundColor: "#72caa5",
+            borderRadius: 10,
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            width: 10,
+            height: "100%",
+            backgroundColor: "#72caa5",
+            left: `${marker4000Percentage}%`,
+            transform: [{ translateX: -5 }], // 중앙 정렬
+          }}
+        />
+        <View
+          style={{
+            position: "absolute",
+            width: 10,
+            height: "100%",
+            backgroundColor: "#72caa5",
+            right: 0,
+          }}
+        />
+      </View>
+    </View>
+  );
+};
+
+interface TodayWalkingCardProps {
+  steps: number;
+}
+const TodayWalkingCard = ({ steps }: TodayWalkingCardProps) => {
+  return (
+    <View style={{
+      width: "100%",
+      alignItems: "flex-start",
+      justifyContent: "center",
+      gap: 5,
+    }}>
+      <Text style={{
+        color: "#72caa5",
+        fontSize: 30,
+        fontWeight: "bold",
+      }}> {steps.toLocaleString()}</Text>
+      <ProgressBar currentValue={steps} maxValue={10000} />
+      <Text style={{ fontSize: 20, marginEnd: 10 }}>매일 4000보만 걸어도 주세요</Text>
+    </View>
+  );
+}
+
 const HEADER_MAX_HEIGHT = 300; // 스크롤 전 큰 타이틀 높이
 const HEADER_MIN_HEIGHT = 100; // 스크롤 후 작은 타이틀 높이
 const TITLE_MAX_SIZE = 40; // 초기 글씨 크기
@@ -268,8 +361,7 @@ const App = ({ children, title }: SectionProps) => {
             paddingBottom: safePadding,
           }}>
           <Section title="오늘 걸음 수">
-
-            <Text style={{ fontSize: 20, marginEnd: 10 }}>매일 4000보만 걸어도 주세요</Text>
+            <TodayWalkingCard steps={2000} />
           </Section>
           <Section title="오늘의 목표">
             <View style={{ flexDirection: "column" }}>
