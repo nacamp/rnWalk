@@ -106,6 +106,9 @@ const App = ({ children, title }: SectionProps) => {
       </Animated.View>
       <ScrollView
         style={backgroundStyle}
+        contentContainerStyle={{
+          paddingBottom: 100,
+        }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
