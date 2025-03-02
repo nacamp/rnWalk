@@ -9,8 +9,27 @@ import {
   View,
   Animated,
   ImageBackground,
+  Button,
+  Alert,
+  Platform,
+  NativeModules
 } from 'react-native';
+import { request, PERMISSIONS, RESULTS } from "react-native-permissions";
+import { useStepCounter } from "./useStepCounter";
 
+const { NativeStepCounter } = NativeModules;
+
+const requestAndroidPermissions = async () => {
+  if (Platform.OS !== "android") return true;
+
+  try {
+    const granted = await request(PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION);
+    return granted === RESULTS.GRANTED;
+  } catch (err) {
+    console.warn("권한 요청 중 오류 발생:", err);
+    return false;
+  }
+};
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -272,7 +291,7 @@ const TodayWalkingCard = ({ steps }: TodayWalkingCardProps) => {
         fontWeight: "bold",
       }}> {steps.toLocaleString()}</Text>
       <ProgressBar currentValue={steps} maxValue={10000} />
-      <Text style={{ fontSize: 20, marginEnd: 10 }}>매일 4000보만 걸어도 주세요</Text>
+      <Text style={{ fontSize: 20, marginEnd: 10 }}>매일 4000보만 걸어 주세요</Text>
     </View>
   );
 }
@@ -287,13 +306,13 @@ const App = ({ children, title }: SectionProps) => {
   const scrollY = useRef(new Animated.Value(0)).current; // 스크롤 감지
 
   const headerHeight = scrollY.interpolate({
-    inputRange: [0, 150], // 스크롤 위치 (최대 150까지)
+    inputRange: [0, 250], // 스크롤 위치 (최대 150까지)
     outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT], // 높이 변화
     extrapolate: "clamp",
   });
 
   const titleSize = scrollY.interpolate({
-    inputRange: [0, 150],
+    inputRange: [0, 250],
     outputRange: [TITLE_MAX_SIZE, TITLE_MIN_SIZE], // 글씨 크기 변화
     extrapolate: "clamp",
   });
@@ -308,7 +327,7 @@ const App = ({ children, title }: SectionProps) => {
 
   useEffect(() => {
     const listenerId = scrollY.addListener(({ value }) => {
-      const opacity = 1 - Math.min(1, value / 150);
+      const opacity = 1 - Math.min(1, value / 250);
       setBackgroundOpacity(opacity);
     });
 
@@ -316,6 +335,52 @@ const App = ({ children, title }: SectionProps) => {
       scrollY.removeListener(listenerId); // ✅ 언마운트 시 리스너 제거 (메모리 누수 방지)
     };
   }, []);
+
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  // const [steps, setSteps] = useState(0);
+  const steps = useStepCounter();
+
+  useEffect(() => {
+    const checkPermissionAndStart = async () => {
+      const granted = await requestAndroidPermissions();
+      setHasPermission(granted);
+
+      if (granted) {
+        NativeStepCounter.startService(); // ✅ 권한 승인 후 Foreground Service 실행
+        NativeStepCounter.startListeningToSteps();
+        // NativeStepCounter.getStepCount().then(setSteps);
+      } else {
+        Alert.alert("권한 필요", "걸음 수 데이터를 가져오려면 권한이 필요합니다.");
+      }
+    };
+
+    checkPermissionAndStart();
+  }, []);
+
+  if (hasPermission === null) {
+    return (
+      <View style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+      }}>
+        <Text>권한 확인 중...</Text>
+      </View>
+    );
+  }
+
+  if (!hasPermission) {
+    return (
+      <View style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+      }}>
+        <Text>권한이 거부되었습니다.</Text>
+        <Button title="권한 요청 다시 하기" onPress={async () => setHasPermission(await requestAndroidPermissions())} />
+      </View>
+    );
+  }
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? '0xF4F4F8' : '0xF4F4F8',
@@ -352,7 +417,7 @@ const App = ({ children, title }: SectionProps) => {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
         )}
-        scrollEventThrottle={16} //? 부드러운 반응 속도
+       scrollEventThrottle={7} //? 부드러운 반응 속도
       >
         <View
           style={{
@@ -361,7 +426,7 @@ const App = ({ children, title }: SectionProps) => {
             paddingBottom: safePadding,
           }}>
           <Section title="오늘 걸음 수">
-            <TodayWalkingCard steps={2000} />
+            <TodayWalkingCard steps={steps%10000} />
           </Section>
           <Section title="오늘의 목표">
             <View style={{ flexDirection: "column" }}>

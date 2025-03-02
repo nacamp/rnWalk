@@ -9,9 +9,21 @@
     "start": "react-native start",
     "test": "jest"
   },
+
+  "codegenConfig": {
+    "name": "NativeStepCounterSpec",
+    "name1": "NativeLocalStorageSpec",
+    "type": "modules",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.rnwalk"
+    }
+  },
+
   "dependencies": {
     "react": "19.0.0",
-    "react-native": "0.78.0"
+    "react-native": "0.78.0",
+    "react-native-permissions": "^5.2.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -20,6 +20,7 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
                 add(StepCounterPackage())
                 add(NativeLocalStoragePackage())
+                add(NativeStepCounterPackage())
                 // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
             }
