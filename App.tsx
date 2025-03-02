@@ -125,13 +125,149 @@ const App = ({ children, title }: SectionProps) => {
             매일 4000보만 걸어도 주세요
           </Section>
           <Section title="오늘의 목표">
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
+            <View style={{ flexDirection: "column" }}>
+              <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={{ fontSize: 20, marginEnd: 10 }}>활동을 완료해주세요</Text>
+              </View>
+
+              <View style={{ width: '100%', paddingHorizontal: 50, paddingVertical: 10, flexDirection: "row", justifyContent: "space-between", alignSelf: "stretch" }}>
+                <ImageBackground
+                  style={{ width: 50, height: 50, borderRadius: 25, overflow: "hidden" }}
+                  source={{ uri: "https://picsum.photos/50/50" }}
+                  resizeMode="cover"
+                />
+                <ImageBackground
+                  style={{ width: 50, height: 50, borderRadius: 25, overflow: "hidden" }}
+                  source={{ uri: "https://picsum.photos/50/50" }}
+                  // style={[styles.headerBbackgroundImage, { opacity: backgroundOpacity }]}
+                  resizeMode="cover"
+                />
+              </View>
+            </View>
           </Section>
+
+          <Section title="오늘의 활동">
+            <View style={{ flexDirection: "column" }}>
+              {[
+                "색깔 맞추기",
+                "색깔 맞추기 색깔 맞추기, ooooooooooo",
+                "기억력 테스트",
+                "퍼즐 맞추기",
+                "이것은 매우 긴 텍스트로 테스트하는 예제입니다. 너무 길어지면 두 줄로 표시됩니다.",
+              ].map((text, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    width: "100%",
+                    paddingHorizontal: 10,
+                    marginVertical: 20,
+                  }}
+                >
+                  {/* ✅ 왼쪽 이미지 */}
+                  <ImageBackground
+                    style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}
+                    source={{ uri: "https://picsum.photos/50/50" }}
+                    resizeMode="cover"
+                  />
+
+                  {/* ✅ 가운데 텍스트 (줄바꿈 가능) */}
+                  <View style={{ flexDirection: 'column', flex: 1 }}>
+                    {/* ✅ 첫 번째 텍스트 */}
+                    <View style={{ flexShrink: 1 }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          textAlign: "left",
+                          flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
+                          minWidth: 100, // ✅ 최소 너비 유지
+                          marginHorizontal: 10,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {text}
+                      </Text>
+                    </View>
+
+                    {/* ✅ 두 번째 텍스트 (카테고리) */}
+                    <View style={{ flexShrink: 1, minHeight: 20 }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          textAlign: "left",
+                          flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
+                          minWidth: 100, // ✅ 최소 너비 유지
+                          marginHorizontal: 10,
+                        }}
+                      >
+                        카테고리
+                      </Text>
+                    </View>
+                  </View>
+                  {/* <Text
+          style={{
+            fontSize: 18,
+            textAlign: "left",
+            flex: 1,
+            flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
+            minWidth: 100, // ✅ 텍스트가 너무 길어질 경우 최소 너비 유지
+            marginHorizontal: 10,
+          }}
+        >
+          {text}
+        </Text> */}
+
+                  {/* ✅ 오른쪽 이미지 (위치 고정) */}
+                  <ImageBackground
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      overflow: "hidden",
+                      alignSelf: "flex-end", // ✅ 오른쪽 정렬 고정
+                    }}
+                    source={{ uri: "https://picsum.photos/50/50" }}
+                    resizeMode="cover"
+                  />
+                </View>
+              ))}
+            </View>
+          </Section>
+
+
+          {/* <Section title="오늘의 활동">
+            <View style={{ flexDirection: "column" }}>
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <ImageBackground
+                  style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}
+                  source={{ uri: "https://picsum.photos/50/50" }}
+                  resizeMode="cover"
+                />
+                <Text style={{ fontSize: 20, textAlign: 'center', alignSelf: "center", marginHorizontal: 10 }}>색깔 맞추기</Text>
+                <ImageBackground
+                  style={{ width: 30, height: 30, borderRadius: 15, overflow: "hidden" }}
+                  source={{ uri: "https://picsum.photos/50/50" }}
+                  resizeMode="cover"
+                />
+              </View>
+
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <ImageBackground
+                  style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}
+                  source={{ uri: "https://picsum.photos/50/50" }}
+                  resizeMode="cover"
+                />
+                <Text style={{ fontSize: 20, textAlign: 'center', alignSelf: "center", marginHorizontal: 10 }}>색깔 맞추기 ㅇㅇㅇ ㅇㅇㅇㅇㅇㅇ</Text>
+                <ImageBackground
+                  style={{ width: 30, height: 30, borderRadius: 15, overflow: "hidden" }}
+                  source={{ uri: "https://picsum.photos/50/50" }}
+                  resizeMode="cover"
+                />
+              </View>
+            </View>
+          </Section> */}
+
           <Section title="오늘의 목표">
             <Text>활동을 완료해주세요</Text>
             <Text>활동을 완료해주세요</Text>
