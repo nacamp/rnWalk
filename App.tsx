@@ -39,6 +39,96 @@ const Section = ({ children, title }: SectionProps) => {
   );
 }
 
+type TdoayActionProps = {
+  title: string;
+  category: string;
+};
+
+const TdoayAction = ({ title, category }: TdoayActionProps) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+
+        //flex: 1, // 이걸 사용하면 목록이 2개부터 글씨가 짤림
+        width: "100%",
+        // paddingHorizontal: 10,
+        // paddingVertical: 20,
+        // borderWidth: 1,
+        // borderColor: "#ddd",
+        // borderStyle: "solid",
+        // alignSelf: "stretch",
+      }}
+    >
+      {/* ✅ 왼쪽 이미지 */}
+      <ImageBackground
+        style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}
+        source={{ uri: "https://picsum.photos/50/50" }}
+        resizeMode="cover"
+      />
+
+      {/* ✅ 가운데 텍스트 (줄바꿈 가능) */}
+      <View style={{
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+
+        flex: 1,
+        paddingLeft: 5,
+      }}>
+        <View style={{
+          // alignSelf: "stretch",
+          // borderWidth: 1,
+          // borderColor: "#ddd",
+          // borderStyle: "solid",
+        }}>
+          <Text
+            style={{
+              fontSize: 16,
+              textAlign: "left",
+              //flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
+              //minWidth: 100, // ✅ 최소 너비 유지
+              //marginHorizontal: 10,
+              //paddingVertical: 20,
+              fontWeight: "bold",
+            }}
+          >
+            {title}
+          </Text>
+        </View>
+        <View style={{ 
+
+         }}>
+          <Text
+            style={{
+              fontSize: 12,
+              textAlign: "left",
+              //flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
+              //minWidth: 100, // ✅ 최소 너비 유지
+              //marginHorizontal: 10,
+            }}
+          >
+            {category}
+          </Text>
+        </View>
+      </View>
+      {/* ✅ 오른쪽 이미지 (위치 고정) */}
+      <ImageBackground
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          overflow: "hidden",
+        }}
+        source={{ uri: "https://picsum.photos/50/50" }}
+        resizeMode="cover"
+      />
+    </View>
+  );
+}
+
 
 const HEADER_MAX_HEIGHT = 300; // 스크롤 전 큰 타이틀 높이
 const HEADER_MIN_HEIGHT = 100; // 스크롤 후 작은 타이틀 높이
@@ -108,7 +198,9 @@ const App = ({ children, title }: SectionProps) => {
         style={backgroundStyle}
         contentContainerStyle={{
           paddingBottom: 100,
+          //flexGrow: 1 
         }}
+
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
@@ -147,126 +239,19 @@ const App = ({ children, title }: SectionProps) => {
           </Section>
 
           <Section title="오늘의 활동">
-            <View style={{ flexDirection: "column" }}>
+            <View style={{ flexDirection: "column", justifyContent: "center", gap: 30 }}>
               {[
+                "이것은 매우 긴 텍스트로 테스트하는 예제입니다. 너무 길어지면 두 줄로 표시됩니다. ddd ddd ddd ddd ddd, 1111",
                 "색깔 맞추기",
                 "색깔 맞추기 색깔 맞추기, ooooooooooo",
                 "기억력 테스트",
                 "퍼즐 맞추기",
-                "이것은 매우 긴 텍스트로 테스트하는 예제입니다. 너무 길어지면 두 줄로 표시됩니다.",
+
               ].map((text, index) => (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    width: "100%",
-                    paddingHorizontal: 10,
-                    marginVertical: 20,
-                  }}
-                >
-                  {/* ✅ 왼쪽 이미지 */}
-                  <ImageBackground
-                    style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}
-                    source={{ uri: "https://picsum.photos/50/50" }}
-                    resizeMode="cover"
-                  />
-
-                  {/* ✅ 가운데 텍스트 (줄바꿈 가능) */}
-                  <View style={{ flexDirection: 'column', flex: 1 }}>
-                    {/* ✅ 첫 번째 텍스트 */}
-                    <View style={{ flexShrink: 1 }}>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          textAlign: "left",
-                          flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
-                          minWidth: 100, // ✅ 최소 너비 유지
-                          marginHorizontal: 10,
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {text}
-                      </Text>
-                    </View>
-
-                    {/* ✅ 두 번째 텍스트 (카테고리) */}
-                    <View style={{ flexShrink: 1, minHeight: 20 }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          textAlign: "left",
-                          flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
-                          minWidth: 100, // ✅ 최소 너비 유지
-                          marginHorizontal: 10,
-                        }}
-                      >
-                        카테고리
-                      </Text>
-                    </View>
-                  </View>
-                  {/* <Text
-          style={{
-            fontSize: 18,
-            textAlign: "left",
-            flex: 1,
-            flexWrap: "wrap", // ✅ 긴 텍스트 자동 줄바꿈
-            minWidth: 100, // ✅ 텍스트가 너무 길어질 경우 최소 너비 유지
-            marginHorizontal: 10,
-          }}
-        >
-          {text}
-        </Text> */}
-
-                  {/* ✅ 오른쪽 이미지 (위치 고정) */}
-                  <ImageBackground
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 15,
-                      overflow: "hidden",
-                      alignSelf: "flex-end", // ✅ 오른쪽 정렬 고정
-                    }}
-                    source={{ uri: "https://picsum.photos/50/50" }}
-                    resizeMode="cover"
-                  />
-                </View>
+                <TdoayAction key={index} title={text} category="기억력" />
               ))}
             </View>
           </Section>
-
-
-          {/* <Section title="오늘의 활동">
-            <View style={{ flexDirection: "column" }}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ImageBackground
-                  style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}
-                  source={{ uri: "https://picsum.photos/50/50" }}
-                  resizeMode="cover"
-                />
-                <Text style={{ fontSize: 20, textAlign: 'center', alignSelf: "center", marginHorizontal: 10 }}>색깔 맞추기</Text>
-                <ImageBackground
-                  style={{ width: 30, height: 30, borderRadius: 15, overflow: "hidden" }}
-                  source={{ uri: "https://picsum.photos/50/50" }}
-                  resizeMode="cover"
-                />
-              </View>
-
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                <ImageBackground
-                  style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden" }}
-                  source={{ uri: "https://picsum.photos/50/50" }}
-                  resizeMode="cover"
-                />
-                <Text style={{ fontSize: 20, textAlign: 'center', alignSelf: "center", marginHorizontal: 10 }}>색깔 맞추기 ㅇㅇㅇ ㅇㅇㅇㅇㅇㅇ</Text>
-                <ImageBackground
-                  style={{ width: 30, height: 30, borderRadius: 15, overflow: "hidden" }}
-                  source={{ uri: "https://picsum.photos/50/50" }}
-                  resizeMode="cover"
-                />
-              </View>
-            </View>
-          </Section> */}
 
           <Section title="오늘의 목표">
             <Text>활동을 완료해주세요</Text>
@@ -365,6 +350,8 @@ const styles = StyleSheet.create({
     // elevation: 3, // Android에서 그림자 효과 (iOS에서는 shadow 속성이 필요함)    
   },
   sectionTitle: {
+    marginBottom: 20,
+
     fontSize: 24,
     fontWeight: '600',
   },
