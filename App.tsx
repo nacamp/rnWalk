@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import type { PropsWithChildren } from 'react';
 import {
   ScrollView,
@@ -61,6 +61,24 @@ const App = ({ children, title }: SectionProps) => {
     extrapolate: "clamp",
   });
 
+  // object 형태로 변환되서 에러 발생
+  // const backgroundOpacity = scrollY.interpolate({
+  //   inputRange: [0, 150], // 200 이상 스크롤되면 배경이 사라짐
+  //   outputRange: [1, 0],  // 1 (완전 보임) → 0 (완전 투명)
+  //   extrapolate: "clamp",
+  // });
+  const [backgroundOpacity, setBackgroundOpacity] = useState(1);
+
+  useEffect(() => {
+    const listenerId = scrollY.addListener(({ value }) => {
+      const opacity = 1 - Math.min(1, value / 150);
+      setBackgroundOpacity(opacity);
+    });
+
+    return () => {
+      scrollY.removeListener(listenerId); // ✅ 언마운트 시 리스너 제거 (메모리 누수 방지)
+    };
+  }, []);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? '0xF4F4F8' : '0xF4F4F8',
@@ -77,15 +95,14 @@ const App = ({ children, title }: SectionProps) => {
       <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
         <ImageBackground
           source={{ uri: "https://picsum.photos/300/200" }}
-          style={styles.headerBbackgroundImage}
+          style={[styles.headerBbackgroundImage, { opacity: backgroundOpacity }]}
           resizeMode="cover"
-        >
-          <View style={styles.headerTitleContainer}>
-            <Animated.Text style={[styles.headerTitle, { fontSize: titleSize }]}>
-              치매예방교실
-            </Animated.Text>
-          </View>
-        </ImageBackground>
+        />
+        <View style={styles.headerTitleContainer}>
+          <Animated.Text style={[styles.headerTitle, { fontSize: titleSize }]}>
+            치매예방교실
+          </Animated.Text>
+        </View>
       </Animated.View>
       <ScrollView
         style={backgroundStyle}
@@ -94,7 +111,6 @@ const App = ({ children, title }: SectionProps) => {
           { useNativeDriver: false }
         )}
         scrollEventThrottle={16} //? 부드러운 반응 속도
-
       >
         <View
           style={{
@@ -150,6 +166,14 @@ const App = ({ children, title }: SectionProps) => {
             <Text>활동을 완료해주세요</Text>
             <Text>활동을 완료해주세요</Text>
           </Section>
+          <Section title="마지막">
+            <Text>활동을 완료해주세요</Text>
+            <Text>활동을 완료해주세요</Text>
+            <Text>활동을 완료해주세요</Text>
+            <Text>활동을 완료해주세요</Text>
+            <Text>활동을 완료해주세요</Text>
+            <Text>활동을 완료해주세요</Text>
+          </Section>
         </View>
       </ScrollView>
     </View>
@@ -168,12 +192,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   headerBbackgroundImage: {
-    ...StyleSheet.absoluteFillObject 
+    ...StyleSheet.absoluteFillObject
   },
   headerTitleContainer: {
-    flex: 1, 
-    justifyContent: "center", 
-    alignItems: "flex-start" 
+    flex: 1,
+    position: "absolute",
+    top: 50,
+    left: 5,
+    // justifyContent: "center",
+    // alignItems: "flex-start"
   },
   headerTitle: {
     fontWeight: "bold",
