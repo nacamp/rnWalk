@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import type { PropsWithChildren } from 'react';
 import {
   ScrollView,
@@ -7,6 +7,7 @@ import {
   Text,
   useColorScheme,
   View,
+  Animated,
 } from 'react-native';
 
 
@@ -37,8 +38,28 @@ const Section = ({ children, title }: SectionProps) => {
   );
 }
 
+
+const HEADER_MAX_HEIGHT = 300; // 스크롤 전 큰 타이틀 높이
+const HEADER_MIN_HEIGHT = 100; // 스크롤 후 작은 타이틀 높이
+const TITLE_MAX_SIZE = 40; // 초기 글씨 크기
+const TITLE_MIN_SIZE = 20; // 스크롤 후 글씨 크기
+
 const App = ({ children, title }: SectionProps) => {
   const isDarkMode = useColorScheme() === 'dark';
+  const scrollY = useRef(new Animated.Value(0)).current; // 스크롤 감지
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, 150], // 스크롤 위치 (최대 150까지)
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT], // 높이 변화
+    extrapolate: "clamp",
+  });
+
+  const titleSize = scrollY.interpolate({
+    inputRange: [0, 150],
+    outputRange: [TITLE_MAX_SIZE, TITLE_MIN_SIZE], // 글씨 크기 변화
+    extrapolate: "clamp",
+  });
+
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? '0xF4F4F8' : '0xF4F4F8',
@@ -52,8 +73,20 @@ const App = ({ children, title }: SectionProps) => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
+      <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
+        <Animated.Text style={[styles.headerTitle, { fontSize: titleSize }]}>
+          치매예방교실
+        </Animated.Text>
+      </Animated.View>
       <ScrollView
-        style={backgroundStyle}>
+        style={backgroundStyle}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16} //? 부드러운 반응 속도
+  
+        >
         <View
           style={{
             backgroundColor: backgroundStyle.backgroundColor,
@@ -115,6 +148,20 @@ const App = ({ children, title }: SectionProps) => {
 }
 
 const styles = StyleSheet.create({
+
+  headerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+
+    backgroundColor: "white",
+  },
+  headerTitle: {
+    fontWeight: "bold",
+  },
+
   sectionContainer: {
     marginTop: 30,
     paddingHorizontal: 24,
