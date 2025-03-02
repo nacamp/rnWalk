@@ -14,37 +14,46 @@ import {
 
 type SectionProps = PropsWithChildren<{
   title: string;
+  noPadding?: boolean;
 }>;
 
-const Section = ({ children, title }: SectionProps) => {
+const Section = ({ children, title, noPadding = false }: SectionProps) => {
   const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? 'white' : 'black',
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription
-        ]}>
+  if (noPadding) {
+    // ✅ noPadding이 true라면 기존 스타일을 무시하고 새로운 View 사용
+    return (
+      <View style={[styles.sectionContainer, { paddingHorizontal: 0, padding: 0 }]}>
         {children}
-      </Text>
+      </View>
+    );
+  }
+  return (
+    <View style={[styles.sectionContainer]}>
+      {title && (
+        <Text
+          style={[
+            styles.sectionTitle,
+            { color: isDarkMode ? 'white' : 'black' },
+          ]}>
+          {title}
+        </Text>
+      )}
+      <View
+        style={[
+          styles.sectionDescription]}
+      >
+        {children}
+      </View>
     </View>
   );
 }
 
-type TdoayActionProps = {
+type TdoayActionCardProps = {
   title: string;
   category: string;
 };
 
-const TdoayAction = ({ title, category }: TdoayActionProps) => {
+const TdoayActionCard = ({ title, category }: TdoayActionCardProps) => {
   return (
     <View
       style={{
@@ -98,9 +107,9 @@ const TdoayAction = ({ title, category }: TdoayActionProps) => {
             {title}
           </Text>
         </View>
-        <View style={{ 
+        <View style={{
 
-         }}>
+        }}>
           <Text
             style={{
               fontSize: 12,
@@ -128,7 +137,52 @@ const TdoayAction = ({ title, category }: TdoayActionProps) => {
     </View>
   );
 }
-
+const ChattingCard = () => {
+  return (
+    <View style={{
+      width: "100%",
+      height: 150,
+      position: "relative",
+    }}>
+      <ImageBackground
+        source={{ uri: "https://picsum.photos/300/200" }}
+        style={{ ...StyleSheet.absoluteFillObject }}
+        resizeMode="cover"
+      >
+        <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(155, 248, 155, 0.5)" }} />
+      </ImageBackground>
+      <View style={{
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        flex: 1,
+        gap: 10,
+        paddingHorizontal: 20,
+      }}>
+        <Text style={{
+          fontSize: 30,
+          fontWeight: "bold",
+          color: "black",
+        }}>
+          메세지를 남겨 보세요
+        </Text>
+        <Text style={{
+          fontSize: 25,
+          color: "black",
+        }}>
+          상담실
+        </Text>
+        <Text style={{
+          fontSize: 22,
+          color: "black",
+          fontWeight: "bold",
+        }}>
+          운영시간 9시 ~ 6시
+        </Text>
+      </View>
+    </View>
+  );
+}
 
 const HEADER_MAX_HEIGHT = 300; // 스크롤 전 큰 타이틀 높이
 const HEADER_MIN_HEIGHT = 100; // 스크롤 후 작은 타이틀 높이
@@ -214,7 +268,8 @@ const App = ({ children, title }: SectionProps) => {
             paddingBottom: safePadding,
           }}>
           <Section title="오늘 걸음 수">
-            매일 4000보만 걸어도 주세요
+
+            <Text style={{ fontSize: 20, marginEnd: 10 }}>매일 4000보만 걸어도 주세요</Text>
           </Section>
           <Section title="오늘의 목표">
             <View style={{ flexDirection: "column" }}>
@@ -248,55 +303,13 @@ const App = ({ children, title }: SectionProps) => {
                 "퍼즐 맞추기",
 
               ].map((text, index) => (
-                <TdoayAction key={index} title={text} category="기억력" />
+                <TdoayActionCard key={index} title={text} category="기억력" />
               ))}
             </View>
           </Section>
 
-          <Section title="오늘의 목표">
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-          </Section>
-          <Section title="오늘의 목표">
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-          </Section>
-          <Section title="오늘 활동">
-          </Section>
-          <Section title="언제든지 메세지를 남겨보세요">
-            운영시간 9시 ~ 6시
-          </Section>
-          <Section title="오늘의 목표">
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-          </Section>
-          <Section title="오늘의 목표">
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-          </Section>
-          <Section title="마지막">
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
-            <Text>활동을 완료해주세요</Text>
+          <Section title="" noPadding>
+            <ChattingCard />
           </Section>
         </View>
       </ScrollView>
