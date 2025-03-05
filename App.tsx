@@ -301,7 +301,7 @@ const HEADER_MIN_HEIGHT = 100; // 스크롤 후 작은 타이틀 높이
 const TITLE_MAX_SIZE = 40; // 초기 글씨 크기
 const TITLE_MIN_SIZE = 20; // 스크롤 후 글씨 크기
 
-const App = ({ children, title }: SectionProps) => {
+const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
   const scrollY = useRef(new Animated.Value(0)).current; // 스크롤 감지
 
