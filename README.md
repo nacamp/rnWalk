@@ -1,97 +1,91 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 정리
 
-# Getting Started
+## TODO 
+- react-native-safe-area-context
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
-## Step 1: Start Metro
+# reference
+- https://github.com/jondot/awesome-react-native/blob/master/README.md
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+# dev
+## navigation
+- https://reactnative.dev/docs/0.76/navigation
+- https://velog.io/@fejigu/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%99%94%EB%A9%B4-%EA%B4%80%EB%A6%AC-React-Navigation-React-Native-Navigation
+- https://adjh54.tistory.com/202
+### @react-navigation
+- https://reactnavigation.org/docs/getting-started/
+- 파라미터 타입
+- https://reactnavigation.org/docs/typescript/
+```bash
+npm install @react-navigation/native @react-navigation/native-stack
+npm install react-native-screens # react-native-safe-area-context
+# tab
+npm install   @react-navigation/bottom-tabs
+```
+### react-native-navigation
+- https://wix.github.io/react-native-navigation/docs/before-you-start
 
-To start the Metro dev server, run the following command from the root of your React Native project:
 
-```sh
-# Using npm
-npm start
+## operation
 
-# OR using Yarn
-yarn start
+### case: JSI, turbo module 전달
+```
+1.ts spec 파일
+2.codegen generate 하는 스크립트와
+3.module, package 코드만 전달하면 되지 않을까?
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+### case: 배포
+```bash
+npx react-native start --reset-cache
+cd android
+mkdir -p app/src/main/assets
+cd ..
+npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
 ```
 
-### iOS
+### case: 휴대폰에 디버깅
+```bash
+# 휴대폰과 맥 장비가 같은  ap 를 참조
+ifconfig
+192.168.0.34
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+npx react-native start --host 192.168.0.34
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+# 폰에서 접속되는지 확인
+http://192.168.0.34:8081
 
-```sh
-bundle install
+# 폰에서 디버깅 호스트 설정
+adb devices
+adb -s R5CW131CCHB shell input keyevent 82
+Debug server host & port for device 메뉴를 클릭해서
+192.168.0.34:8081 입력
+
+커맨드라인에서 실행하는 방법
+npx react-native run-android
 ```
 
-Then, and every time you update your native dependencies, run:
+### hot-key
+- cmd + m   dev 메누 활성화
 
-```sh
-bundle exec pod install
+### react-native
+- https://github.com/react-native-community/cli/blob/main/docs/commands.md
+```bash
+npx react-native start
+npx react-native start --host 192.168.0.34
+npx react-native run-android
+```
+### adb
+- https://developer.android.com/tools/adb?hl=ko
+```bash
+adb devices
+# dev tool 활성화
+adb -s emulator-5554 shell input keyevent 82
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### install
+- https://reactnative.dev/docs/getting-started-without-a-framework
+```bash
+npm uninstall -g react-native-cli @react-native-community/cli
+npx @react-native-community/cli@latest init rnWalk
+``
