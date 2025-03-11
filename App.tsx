@@ -14,12 +14,13 @@ import {
   Platform,
   NativeModules
 } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { useStepCounter } from "./useStepCounter";
 
 const { NativeStepCounter } = NativeModules;
 
-const requestAndroidPermissions = async () => {
+const requestPermissions = async () => {
   if (Platform.OS !== "android") return true;
 
   try {
@@ -342,7 +343,7 @@ const App = () => {
 
   useEffect(() => {
     const checkPermissionAndStart = async () => {
-      const granted = await requestAndroidPermissions();
+      const granted = await requestPermissions();
       setHasPermission(granted);
 
       if (granted) {
@@ -356,6 +357,12 @@ const App = () => {
 
     checkPermissionAndStart();
   }, []);
+
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? '0xF4F4F8' : '0xF4F4F8',
+  };
+
+  const safePadding = '5%';
 
   if (hasPermission === null) {
     return (
@@ -377,100 +384,108 @@ const App = () => {
         alignItems: "center"
       }}>
         <Text>권한이 거부되었습니다.</Text>
-        <Button title="권한 요청 다시 하기" onPress={async () => setHasPermission(await requestAndroidPermissions())} />
-      </View>
+        <Button
+          title="권한 요청 다시 하기"
+          onPress={async () => {
+            const granted = await requestPermissions();
+            setHasPermission(granted);
+            if (granted) {
+              NativeStepCounter.startService();
+              NativeStepCounter.startListeningToSteps();
+            }
+          }}
+        />
+       </View>
     );
   }
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? '0xF4F4F8' : '0xF4F4F8',
-  };
-
-  const safePadding = '5%';
-
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
-        <ImageBackground
-          source={{ uri: "https://picsum.photos/300/200" }}
-          style={[styles.headerBbackgroundImage, { opacity: backgroundOpacity }]}
-          resizeMode="cover"
-        />
-        <View style={styles.headerTitleContainer}>
-          <Animated.Text style={[styles.headerTitle, { fontSize: titleSize }]}>
-            치매예방교실
-          </Animated.Text>
-        </View>
-      </Animated.View>
-      <ScrollView
-        style={backgroundStyle}
-        contentContainerStyle={{
-          paddingBottom: 100,
-          //flexGrow: 1 
-        }}
-
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
-       scrollEventThrottle={7} //? 부드러운 반응 속도
-      >
-        <View
-          style={{
-            backgroundColor: backgroundStyle.backgroundColor,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="오늘 걸음 수">
-            <TodayWalkingCard steps={steps%10000} />
-          </Section>
-          <Section title="오늘의 목표">
-            <View style={{ flexDirection: "column" }}>
-              <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={{ fontSize: 20, marginEnd: 10 }}>활동을 완료해주세요</Text>
-              </View>
-
-              <View style={{ width: '100%', paddingHorizontal: 50, paddingVertical: 10, flexDirection: "row", justifyContent: "space-between", alignSelf: "stretch" }}>
-                <ImageBackground
-                  style={{ width: 50, height: 50, borderRadius: 25, overflow: "hidden" }}
-                  source={{ uri: "https://picsum.photos/50/50" }}
-                  resizeMode="cover"
-                />
-                <ImageBackground
-                  style={{ width: 50, height: 50, borderRadius: 25, overflow: "hidden" }}
-                  source={{ uri: "https://picsum.photos/50/50" }}
-                  // style={[styles.headerBbackgroundImage, { opacity: backgroundOpacity }]}
-                  resizeMode="cover"
-                />
-              </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }} edges={[]}>
+        <View style={backgroundStyle}>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={backgroundStyle.backgroundColor}
+          />
+          <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
+            <ImageBackground
+              source={{ uri: "https://picsum.photos/300/200" }}
+              style={[styles.headerBbackgroundImage, { opacity: backgroundOpacity }]}
+              resizeMode="cover"
+            />
+            <View style={styles.headerTitleContainer}>
+              <Animated.Text style={[styles.headerTitle, { fontSize: titleSize }]}>
+                치매예방교실
+              </Animated.Text>
             </View>
-          </Section>
+          </Animated.View>
+          <ScrollView
+            style={backgroundStyle}
+            contentContainerStyle={{
+              paddingBottom: 100,
+              //flexGrow: 1 
+            }}
 
-          <Section title="오늘의 활동">
-            <View style={{ flexDirection: "column", justifyContent: "center", gap: 30 }}>
-              {[
-                "이것은 매우 긴 텍스트로 테스트하는 예제입니다. 너무 길어지면 두 줄로 표시됩니다. ddd ddd ddd ddd ddd, 1111",
-                "색깔 맞추기",
-                "색깔 맞추기 색깔 맞추기, ooooooooooo",
-                "기억력 테스트",
-                "퍼즐 맞추기",
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: false }
+            )}
+            scrollEventThrottle={7} //? 부드러운 반응 속도
+          >
+            <View
+              style={{
+                backgroundColor: backgroundStyle.backgroundColor,
+                paddingHorizontal: safePadding,
+                paddingBottom: safePadding,
+              }}>
+              <Section title="오늘 걸음 수">
+                <TodayWalkingCard steps={steps % 10000} />
+              </Section>
+              <Section title="오늘의 목표">
+                <View style={{ flexDirection: "column" }}>
+                  <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={{ fontSize: 20, marginEnd: 10 }}>활동을 완료해주세요</Text>
+                  </View>
 
-              ].map((text, index) => (
-                <TdoayActionCard key={index} title={text} category="기억력" />
-              ))}
+                  <View style={{ width: '100%', paddingHorizontal: 50, paddingVertical: 10, flexDirection: "row", justifyContent: "space-between", alignSelf: "stretch" }}>
+                    <ImageBackground
+                      style={{ width: 50, height: 50, borderRadius: 25, overflow: "hidden" }}
+                      source={{ uri: "https://picsum.photos/50/50" }}
+                      resizeMode="cover"
+                    />
+                    <ImageBackground
+                      style={{ width: 50, height: 50, borderRadius: 25, overflow: "hidden" }}
+                      source={{ uri: "https://picsum.photos/50/50" }}
+                      // style={[styles.headerBbackgroundImage, { opacity: backgroundOpacity }]}
+                      resizeMode="cover"
+                    />
+                  </View>
+                </View>
+              </Section>
+
+              <Section title="오늘의 활동">
+                <View style={{ flexDirection: "column", justifyContent: "center", gap: 30 }}>
+                  {[
+                    "이것은 매우 긴 텍스트로 테스트하는 예제입니다. 너무 길어지면 두 줄로 표시됩니다. ddd ddd ddd ddd ddd, 1111",
+                    "색깔 맞추기",
+                    "색깔 맞추기 색깔 맞추기, ooooooooooo",
+                    "기억력 테스트",
+                    "퍼즐 맞추기",
+
+                  ].map((text, index) => (
+                    <TdoayActionCard key={index} title={text} category="기억력" />
+                  ))}
+                </View>
+              </Section>
+
+              <Section title="" noPadding>
+                <ChattingCard />
+              </Section>
             </View>
-          </Section>
-
-          <Section title="" noPadding>
-            <ChattingCard />
-          </Section>
+          </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
