@@ -1,18 +1,83 @@
 # 정리
 
 ## TODO 
-- react-native-safe-area-context
+- ?
 
 
 # reference
 - https://github.com/jondot/awesome-react-native/blob/master/README.md
+- https://reactnative.dev/docs/components-and-apis
 
 # dev
-## navigation
+
+
+## case: permission
+- https://www.npmjs.com/package/react-native-permissions
+
+## case: 상태바/노치/홈 인디케이터 양역관리
+- react-native-safe-area-context
+- https://appandflow.github.io/react-native-safe-area-context/
+
+## case: native interface
+### event pub/sub
+- https://reactnative.dev/docs/legacy/native-modules-android
+```kotlin
+val steps: StateFlow<Int> get() = _steps
+...
+override fun startListeningToSteps() {
+    StepCounterService.steps
+        .onEach { stepCount ->
+            sendEvent("onStepCountUpdate", stepCount)
+        }
+        .launchIn(scope)
+}
+private fun sendEvent(reactContext: ReactContext, eventName: String, params: WritableMap?) {
+    reactContext
+      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+      .emit(eventName, params)
+}
+```
+```typescript
+export const useStepCounter = () => {
+  const [steps, setSteps] = useState(0);
+  useEffect(() => {
+    setSteps(NativeStepCounter.getStepCount());
+    const subscription = stepEventEmitter.addListener("onStepCountUpdate", setSteps);
+    NativeStepCounter.startListeningToSteps();
+    return () => subscription.remove();
+  }, []);\
+  return steps;
+};
+```
+### turbo module
+- https://reactnative.dev/docs/turbo-native-modules-introduction?platforms=android
+```js
+//1. package.json
+"codegenConfig": {
+    "name": "NativeStepCounterSpec",
+    "name1": "NativeLocalStorageSpec",
+    "type": "modules",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.rnwalk"
+    }
+},
+// 여러개의 파일을 만들지 못해서, 기존 모듈은 name1으로 잠시 바꾸고 실행
+```
+```bash
+// 2. 생성
+cd android  && ./gradlew generateCodegenArtifactsFromSchema && cd ..
+```
+## case: native interface
+### native modules(will be deprecated )
+- https://reactnative.dev/docs/legacy/native-modules-android
+
+## case: 화면 전환
+### navigation
 - https://reactnative.dev/docs/0.76/navigation
 - https://velog.io/@fejigu/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%99%94%EB%A9%B4-%EA%B4%80%EB%A6%AC-React-Navigation-React-Native-Navigation
 - https://adjh54.tistory.com/202
-### @react-navigation
+#### @react-navigation
 - https://reactnavigation.org/docs/getting-started/
 - 파라미터 타입
 - https://reactnavigation.org/docs/typescript/
@@ -22,11 +87,17 @@ npm install react-native-screens # react-native-safe-area-context
 # tab
 npm install   @react-navigation/bottom-tabs
 ```
-### react-native-navigation
+#### react-native-navigation
 - https://wix.github.io/react-native-navigation/docs/before-you-start
 
 
 ## operation
+
+## case: import com.facebook.react.PackageList 을 못찾으면
+- https://github.com/facebook/react-native/issues/43426
+```bash
+npm run android 를 실행하면 보임
+```
 
 ### case: JSI, turbo module 전달
 ```
@@ -81,6 +152,8 @@ npx react-native run-android
 adb devices
 # dev tool 활성화
 adb -s emulator-5554 shell input keyevent 82
+# 앱종료
+adb shell am force-stop com.rnwalk
 ```
 
 ### install
