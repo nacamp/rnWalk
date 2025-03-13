@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Button, Modal, StyleSheet } from "react-native";
+import { View, Text, Button, Modal, StyleSheet, Platform, Alert, NativeModules } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { enableScreens } from 'react-native-screens';
@@ -48,9 +48,19 @@ function A2Screen({ navigation }: A2ScreenProps) {
 
 function SettingsScreen({ navigation }: SettingsScreenProps) {
   const [modalVisible, setModalVisible] = useState(false);
+
+  const openComposeScreen = () => {
+    if (Platform.OS === 'android') {
+      NativeModules.IntentLauncher.startActivityByName('com.rnwalk.HelloComposeActivity');
+    } else {
+      Alert.alert('Compose는 Android에서만 볼 수 있어요!');
+    }
+  };
+
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 10 }}>
-      <Text>Settings Screen</Text>
+      <Text>Settings Screen 111</Text>
+      <Button title="Hello Compose 열기" onPress={openComposeScreen} />
       <Button title="A1Screen 화면으로 이동" onPress={() => navigation.navigate("A1")} />
       <Button title="풀화면 다이얼로그(Modal) 열기" onPress={() => setModalVisible(true)} />
       <Button title="풀화면 다이얼로그(Stack.Screen) 열기" onPress={() => navigation.navigate("Modal")} />
