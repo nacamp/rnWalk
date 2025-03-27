@@ -10,7 +10,8 @@
     "test": "jest"
   },
   "codegenConfig": {
-    "name": "NativeStepCounterSpec",
+    "name": "NativeIntentLauncherSpec",
+    "name2": "NativeStepCounterSpec",
     "name1": "NativeLocalStorageSpec",
     "type": "modules",
     "jsSrcsDir": "specs",

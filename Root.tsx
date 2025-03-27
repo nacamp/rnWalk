@@ -5,23 +5,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import App from "./App";
 import {SettingsStackNavigator} from "./SettingsScreen";
 
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
-
-// // 화면 B (SettingsScreen)
-// function SettingsScreen() {
-//   return (
-//     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-//       <Text>Settings Screen</Text>
-//     </View>
-//   );
-// }
-
 // 하단 탭 네비게이터 생성
 const Tab = createBottomTabNavigator();
 

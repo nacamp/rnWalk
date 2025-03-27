@@ -22,6 +22,7 @@ class MainApplication : Application(), ReactApplication {
                 add(NativeLocalStoragePackage())
                 add(NativeStepCounterPackage())
                 add(IntentLauncherPackage())
+                add(NativeIntentLauncherPackage())
                 // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
             }

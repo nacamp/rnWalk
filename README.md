@@ -93,7 +93,37 @@ npm install   @react-navigation/bottom-tabs
 
 ## operation
 
-## case: import com.facebook.react.PackageList 을 못찾으면
+### case: android spec 생성
+```
+cd android  && ./gradlew generateCodegenArtifactsFromSchema && cd ..
+```
+
+### case: ./gradlew generateCodegenArtifactsFromSchema 에러
+```bash
+./gradlew clean
+Multiple build operations failed.
+Could not read workspace metadata from /Users/jimmy/.gradle/caches/8.12/transforms/1067c4926bc2eeeb196be1d15e0d6dee/metadata.bin
+...
+
+# 처리
+rm -rf ~/.gradle/caches
+rm -rf ~/.gradle/wrapper
+rm -rf node_modules
+rm -rf android/.gradle
+rm -rf android/build
+npm install
+cd android
+./gradlew clean
+
+Execution failed for task ':app:externalNativeBuildCleanDebug'.
+> com.android.ide.common.process.ProcessException: ninja: Entering directory `/Users/jimmy/src/react/rnWalk/android/app/.cxx/Debug/5ov3whbx/armeabi-v7a'
+# 처리
+rm -rf android/app/.cxx
+
+
+```
+
+### case: import com.facebook.react.PackageList 을 못찾으면
 - https://github.com/facebook/react-native/issues/43426
 ```bash
 npm run android 를 실행하면 보임
@@ -143,6 +173,7 @@ npx react-native run-android
 - https://github.com/react-native-community/cli/blob/main/docs/commands.md
 ```bash
 npx react-native start
+npx react-native start --reset-cache
 npx react-native start --host 192.168.0.34
 npx react-native run-android
 ```
